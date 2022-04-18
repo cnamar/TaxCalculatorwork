@@ -14,6 +14,7 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
     //want to work on
     public ProductController(ProductService productService) {
         super();
@@ -33,23 +34,23 @@ public class ProductController {
     }
 
     @GetMapping("/TotalPrice")
-    public Double CalcTotalPrice(){
+    public Double CalcTotalPrice() {
         return productService.calculateTotalPrice();
     }
 
     @GetMapping("/TotalTax")
-    public Double CalcTotalTax(){
+    public Double CalcTotalTax() {
         return productService.calculateTotalTax();
     }
 
     // handler method to handle delete product request
     @DeleteMapping("/products/{id}")
     public String deleteProduct(@PathVariable Long id) {
-        if(productService.isProductExists(id)) {
+        if (productService.isProductExists(id)) {
             productService.deleteProductById(id);
             return "Deleted the Product successfully!";
-        }
-        else {
+        } else {
             return "No such Product to delete from your bill!";
         }
     }
+}
