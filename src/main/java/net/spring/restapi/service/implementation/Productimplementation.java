@@ -25,7 +25,7 @@ public class Productimplementation implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return (List<Product>) productRepository.findAll();
     }
 
     @Override
@@ -51,5 +51,96 @@ public class Productimplementation implements ProductService {
 
 
 
+
+
+
+    @Override
+    public Double calculateTotalPrice(){
+
+        AtomicReference<Double> taxPerProduct = new AtomicReference<>(0.0);
+        AtomicReference<Double> total_tax = new AtomicReference<>(0.0);
+        AtomicReference<Double> total_price = new AtomicReference<>(0.0);
+        AtomicReference<Double> unitPrice = new AtomicReference<>(0.0);
+
+        List<Product> productList = getAllProducts();
+        productList.forEach(product-> {
+
+            if (product.isImported(product.getpName())) {
+                if (product.isSalesTaxApplicable(product.getpName())) {
+                    taxPerProduct.set(product.getpPrice() * 0.05);
+                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
+                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
+                    total_price.updateAndGet(v -> v + product.getpPrice());
+                }
+                else {
+                    taxPerProduct.set(product.getpPrice() * 0.15);
+                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
+                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
+                    total_price.updateAndGet(v -> v + product.getpPrice());
+                }
+            }
+            else {
+                if (product.isSalesTaxApplicable(product.getpName())) {
+                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
+                    total_price.updateAndGet(v -> v + product.getpPrice());
+                }
+                else {
+                    taxPerProduct.set(product.getpPrice() * 0.10);
+                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
+                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
+                    total_price.updateAndGet(v -> v + product.getpPrice());
+                }
+            }
+
+        });
+
+        return total_price.get();
+
+    }
+
+    @Override
+    public Double calculateTotalTax(){
+
+        AtomicReference<Double> total_tax = new AtomicReference<>(0.0);
+        AtomicReference<Double> total_price = new AtomicReference<>(0.0);
+        AtomicReference<Double> taxPerProduct = new AtomicReference<>(0.0);
+        AtomicReference<Double> unitPrice = new AtomicReference<>(0.0);
+
+        List<Product> productList = getAllProducts();
+        productList.forEach(product-> {
+
+
+            if (product.isImported(product.getpName())) {
+                if (product.isSalesTaxApplicable(product.getpName())) {
+                    taxPerProduct.set(product.getpPrice() * 0.05);
+                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
+                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
+                    total_price.updateAndGet(v -> v + product.getpPrice());
+                }
+                else {
+                    taxPerProduct.set(product.getpPrice() * 0.15);
+                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
+                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
+                    total_price.updateAndGet(v -> v + product.getpPrice());
+                }
+            }
+            else {
+                if (product.isSalesTaxApplicable(product.getpName())) {
+                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
+                    total_price.updateAndGet(v -> v + product.getpPrice());
+                }
+                else {
+                    taxPerProduct.set(product.getpPrice() * 0.10);
+                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
+                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
+                    total_price.updateAndGet(v -> v + product.getpPrice());
+                }
+            }
+
+        });
+
+        return total_tax.get();
+
+    }
 
 }
