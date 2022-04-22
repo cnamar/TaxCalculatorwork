@@ -13,9 +13,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
-@AllArgsConstructor
+
 @Entity
 @Table( name = "products")
 public class Product {
@@ -24,18 +22,17 @@ public class Product {
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column( name = "productName" , nullable = false)
+    @Column( name = "product_name")
     private String pName;
 
-    @Column( name = "productCount")
+    @Column( name = "product_count")
     private Integer pCount;
 
-    @Column( name = "productPrice")
+    @Column( name = "product_price")
     private Double pPrice;
 
 
-    private double tax=0;
-    private double finalPrice=0;
+
     public Product(){
 
     }
@@ -82,52 +79,66 @@ public class Product {
         this.pPrice = pPrice;
     }
 
-    //set of items to be excluded from sales tax
-    Set<String> itemToBeExcluded = new HashSet<String>(Arrays.asList("book","chocolate bar","chocolate","medicine","food"));
 
+   public Double getTotalPrice(){
+       double tax=0.0;
+       double totalPrice=0.0;
+       double taxEach=0.0;
+       if (pName.contains("imported")) {
+           if (pName.contains("book") || pName.contains("food") || pName.contains("medicine")) {
+               taxEach = pPrice * 0.05;
+               tax += (taxEach* pCount);
+               totalPrice += (pPrice + taxEach) * pCount;
+           }
+           else {
+               taxEach= pPrice * 0.15;
+               tax += (taxEach * pCount);
+               totalPrice += (pPrice + taxEach)*pCount;
+           }
+       }
+       else {
+           if (pName.contains("book") || pName.contains("food") || pName.contains("medicine")) {
+               totalPrice += (pPrice * pCount);
+           }
+           else {
+               taxEach = pPrice * 0.10;
+               tax += (taxEach * pCount);
+               totalPrice += (pPrice + taxEach)*pCount;;
+           }
+       }
+       return totalPrice;
+   }
 
-
-    public void calculateTax(){
-        String nameInLowerCase = pName.toLowerCase();
-
-        if(isImported(nameInLowerCase)){
-            nameInLowerCase = getTruncatedName(nameInLowerCase);
-            tax+=pPrice*0.05;
+    public Double getTax(){
+        double tax=0.0;
+        double totalPrice=0.0;
+        double taxEach=0.0;
+        if (pName.contains("imported")) {
+            if (pName.contains("book") || pName.contains("food") || pName.contains("medicine")) {
+                taxEach = pPrice * 0.05;
+                tax += (taxEach* pCount);
+                totalPrice += (pPrice + taxEach) * pCount;
+            }
+            else {
+                taxEach= pPrice * 0.15;
+                tax += (taxEach * pCount);
+                totalPrice += (pPrice + taxEach)*pCount;
+            }
         }
-        if(isSalesTaxApplicable(nameInLowerCase))
-            tax+=pPrice*0.1;
-        finalPrice=pPrice+tax;
-
+        else {
+            if (pName.contains("book") || pName.contains("food") || pName.contains("medicine")) {
+                totalPrice += (pPrice * pCount);
+            }
+            else {
+                taxEach = pPrice * 0.10;
+                tax += (taxEach * pCount);
+                totalPrice += (pPrice + taxEach)*pCount;;
+            }
+        }
+        return tax;
     }
 
-    public boolean isSalesTaxApplicable(String name){
-        return (!itemToBeExcluded.contains(name));
-    }
-    public boolean isImported(String name){
-        return name.contains("imported");
-    }
 
-    //removing imported tag
-    public String getTruncatedName(String name){
-        return(name.replaceAll("imported ",""));
-    }
-    //getters
-    public double getFinalPrice(){
-        return(finalPrice);
-    }
 
-    public double getTotalTaxOfItem(){
-        return(pCount*tax);
-    }
-    public double getTotalPriceOfItem(){
-        return(finalPrice*pCount);
-    }
-
-    public String productInitialPriceDetails(){
-        return(pName+':'+pCount+':'+pPrice);
-    }
-    public String productFinalPriceDetails(){
-        return(pName+':'+pCount+':'+finalPrice);
-    }
 
 }

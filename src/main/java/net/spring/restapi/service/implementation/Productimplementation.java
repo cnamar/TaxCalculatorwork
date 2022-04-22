@@ -57,89 +57,89 @@ public class Productimplementation implements ProductService {
     @Override
     public Double calculateTotalPrice(){
 
-        AtomicReference<Double> taxPerProduct = new AtomicReference<>(0.0);
-        AtomicReference<Double> total_tax = new AtomicReference<>(0.0);
-        AtomicReference<Double> total_price = new AtomicReference<>(0.0);
-        AtomicReference<Double> unitPrice = new AtomicReference<>(0.0);
+        AtomicReference<Double> taxEach = new AtomicReference<>(0.0);
+        AtomicReference<Double> tax = new AtomicReference<>(0.0);
+        AtomicReference<Double> totalPrice = new AtomicReference<>(0.0);
+        AtomicReference<Double> pPrice = new AtomicReference<>(0.0);
 
         List<Product> productList = getAllProducts();
         productList.forEach(product-> {
 
-            if (product.isImported(product.getpName())) {
-                if (product.isSalesTaxApplicable(product.getpName())) {
-                    taxPerProduct.set(product.getpPrice() * 0.05);
-                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
-                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
-                    total_price.updateAndGet(v -> v + product.getpPrice());
+            if (product.getpName().contains("imported")) {
+                if (product.getpName().contains("book") || product.getpName().contains("food") || product.getpName().contains("medicine")) {
+                    taxEach.set(product.getpPrice() * 0.05);
+                    pPrice.set((product.getpPrice() + taxEach.get()) * product.getpCount());
+                    tax.updateAndGet(v -> v + (taxEach.get() * product.getpCount()));
+                    totalPrice.updateAndGet(v -> v + product.getpPrice());
                 }
                 else {
-                    taxPerProduct.set(product.getpPrice() * 0.15);
-                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
-                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
-                    total_price.updateAndGet(v -> v + product.getpPrice());
+                    taxEach.set(product.getpPrice() * 0.15);
+                    pPrice.set((product.getpPrice() + taxEach.get()) * product.getpCount());
+                    tax.updateAndGet(v -> v + (taxEach.get() * product.getpCount()));
+                    totalPrice.updateAndGet(v -> v + product.getpPrice());
                 }
             }
             else {
-                if (product.isSalesTaxApplicable(product.getpName())) {
-                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
-                    total_price.updateAndGet(v -> v + product.getpPrice());
+                if (product.getpName().contains("book") || product.getpName().contains("food") || product.getpName().contains("medicine")) {
+                    pPrice.set((product.getpPrice() + taxEach.get()) * product.getpCount());
+                    totalPrice.updateAndGet(v -> v + product.getpPrice());
                 }
                 else {
-                    taxPerProduct.set(product.getpPrice() * 0.10);
-                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
-                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
-                    total_price.updateAndGet(v -> v + product.getpPrice());
+                    taxEach.set(product.getpPrice() * 0.10);
+                    pPrice.set((product.getpPrice() + taxEach.get()) * product.getpCount());
+                    tax.updateAndGet(v -> v + (taxEach.get() * product.getpCount()));
+                    totalPrice.updateAndGet(v -> v + product.getpPrice());
                 }
             }
 
         });
 
-        return total_price.get();
+        return totalPrice.get();
 
     }
 
     @Override
     public Double calculateTotalTax(){
 
-        AtomicReference<Double> total_tax = new AtomicReference<>(0.0);
-        AtomicReference<Double> total_price = new AtomicReference<>(0.0);
-        AtomicReference<Double> taxPerProduct = new AtomicReference<>(0.0);
-        AtomicReference<Double> unitPrice = new AtomicReference<>(0.0);
+        AtomicReference<Double> tax = new AtomicReference<>(0.0);
+        AtomicReference<Double> totalPrice = new AtomicReference<>(0.0);
+        AtomicReference<Double> taxEach= new AtomicReference<>(0.0);
+        AtomicReference<Double> pPrice = new AtomicReference<>(0.0);
 
         List<Product> productList = getAllProducts();
         productList.forEach(product-> {
 
 
-            if (product.isImported(product.getpName())) {
-                if (product.isSalesTaxApplicable(product.getpName())) {
-                    taxPerProduct.set(product.getpPrice() * 0.05);
-                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
-                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
-                    total_price.updateAndGet(v -> v + product.getpPrice());
+            if (product.getpName().contains("imported")) {
+                if (product.getpName().contains("book") || product.getpName().contains("food") || product.getpName().contains("medicine")) {
+                    taxEach.set(product.getpPrice() * 0.05);
+                    pPrice.set((product.getpPrice() + taxEach.get()) * product.getpCount());
+                    tax.updateAndGet(v -> v + (taxEach.get() * product.getpCount()));
+                    totalPrice.updateAndGet(v -> v + product.getpPrice());
                 }
                 else {
-                    taxPerProduct.set(product.getpPrice() * 0.15);
-                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
-                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
-                    total_price.updateAndGet(v -> v + product.getpPrice());
+                    taxEach.set(product.getpPrice() * 0.15);
+                    pPrice.set((product.getpPrice() + taxEach.get()) * product.getpCount());
+                    tax.updateAndGet(v -> v + (taxEach.get() * product.getpCount()));
+                    totalPrice.updateAndGet(v -> v + product.getpPrice());
                 }
             }
             else {
-                if (product.isSalesTaxApplicable(product.getpName())) {
-                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
-                    total_price.updateAndGet(v -> v + product.getpPrice());
+                if (product.getpName().contains("book") || product.getpName().contains("food") || product.getpName().contains("medicine")) {
+                    pPrice.set((product.getpPrice() + taxEach.get()) * product.getpCount());
+                    totalPrice.updateAndGet(v -> v + product.getpPrice());
                 }
                 else {
-                    taxPerProduct.set(product.getpPrice() * 0.10);
-                    unitPrice.set((product.getpPrice() + taxPerProduct.get()) * product.getpCount());
-                    total_tax.updateAndGet(v -> v + (taxPerProduct.get() * product.getpCount()));
-                    total_price.updateAndGet(v -> v + product.getpPrice());
+                    taxEach.set(product.getpPrice() * 0.10);
+                    pPrice.set((product.getpPrice() + taxEach.get()) * product.getpCount());
+                    tax.updateAndGet(v -> v + (taxEach.get() * product.getpCount()));
+                    totalPrice.updateAndGet(v -> v + product.getpPrice());
                 }
             }
 
         });
 
-        return total_tax.get();
+        return tax.get();
 
     }
 
